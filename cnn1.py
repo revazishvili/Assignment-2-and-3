@@ -1,24 +1,13 @@
 import tensorflow as tf
-
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
-
-"""### Download and prepare the CIFAR10 dataset
-
-
-The CIFAR10 dataset contains 60,000 color images in 10 classes, with 6,000 images in each class. The dataset is divided into 50,000 training images and 10,000 testing images. The classes are mutually exclusive and there is no overlap between them.
-"""
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
 
 # Normalize pixel values to be between 0 and 1
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
-"""### Verify the data
-
-To verify that the dataset looks correct, let's plot the first 25 images from the training set and display the class name below each image:
-
-"""
+# Verify the data
 
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
@@ -35,37 +24,20 @@ for i in range(25):
     plt.xlabel(class_names[train_labels[i][0]])
 plt.show()
 
-"""### Create the convolutional base
-
-The 6 lines of code below define the convolutional base using a common pattern: a stack of [Conv2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Conv2D) and [MaxPooling2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/MaxPool2D) layers.
-
-As input, a CNN takes tensors of shape (image_height, image_width, color_channels), ignoring the batch size. If you are new to these dimensions, color_channels refers to (R,G,B). In this example, you will configure your CNN to process inputs of shape (32, 32, 3), which is the format of CIFAR images. You can do this by passing the argument `input_shape` to your first layer.
-"""
-
+# Create the convolutional base
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-
-"""Let's display the architecture of your model so far:"""
-
 model.summary()
-
 model.add(layers.Flatten())
 model.add(layers.Dense(64, activation='relu'))
 model.add(layers.Dense(10))
-
-"""Here's the complete architecture of your model:"""
-
 model.summary()
 
-"""The network summary shows that (4, 4, 64) outputs were flattened into vectors of shape (1024) before going through two Dense layers.
-
-### Compile and train the model. **I Change epoch to 20**
-"""
-
+# Compile and train the model. **I Change epoch to 20**
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
@@ -73,7 +45,7 @@ model.compile(optimizer='adam',
 history = model.fit(train_images, train_labels, epochs=20,
                     validation_data=(test_images, test_labels))
 
-"""### Evaluate the model"""
+# Evaluate the model
 
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
@@ -90,7 +62,5 @@ print(test_acc)
 with open('accuracy1.txt', 'w') as f:
     f.write(f'Test accuracy: {test_acc:.4f}\n')
     f.write(f'Training accuracy: {history.history["accuracy"][-1]:.4f}')
-
-"""This simple CNN has achieved a test accuracy of over 70%. Not bad for a few lines of code!"""
 
 print(f'Test accuracy written to accuracy1.txt')
