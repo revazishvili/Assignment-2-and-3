@@ -3,6 +3,7 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Download bird image, resize it, and save it as 'bird.png'
 bird_img = cv2.imread('bird.png')  # Load the bird image
@@ -65,3 +66,12 @@ print("Test accuracy:", test_acc)
 predictions = model.predict(np.expand_dims(bird_resized_rgb, axis=0))
 predicted_class = np.argmax(predictions)
 print("Predicted class for bird image:", class_names[predicted_class])
+
+# Plot training and validation accuracy
+plt.plot(history.history['accuracy'], label='accuracy')
+plt.plot(history.history['val_accuracy'], label='val_accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.ylim([0, 1])
+plt.legend(loc='lower right')
+plt.show()
