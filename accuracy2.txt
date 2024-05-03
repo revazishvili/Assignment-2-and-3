@@ -1,0 +1,2 @@
+313/313 - 3s - loss: 0.8866 - accuracy: 0.7090 - 3s/epoch - 11ms/step
+Test accuracy: 0.7089999914169312
